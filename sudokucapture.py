@@ -18,14 +18,16 @@ def getWrap(img,coor,dim):
     return imgwrap
 def preprocess(img):
     imggray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    imgblur=cv2.GaussianBlur(imggray,(5,5),1)
-    imgcanny=cv2.Canny((imgblur),120,120)
+    imgblur=cv2.GaussianBlur(imggray,(5,5),0.5)
+    imgcanny=cv2.Canny((imgblur),80,80)
     kernel=np.ones((5,5))
     imgdial=cv2.dilate(imgcanny,kernel,iterations=1)
     final=cv2.erode(imgdial,kernel,iterations=1)
     return imgcanny
 def getcontour(img):
+    found=False
     maxArea=0
+    biggest=np.zeros((4,1,2))
     contours,hierarchy=cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
     for cnt in contours:
         area =cv2.contourArea(cnt)
@@ -36,7 +38,8 @@ def getcontour(img):
             if area > maxArea and len(approx)==4:
                 biggest=approx
                 maxArea=area
-    return biggest
+                found=True
+    return found,biggest
 def sudokucap(img):
     scale_percent = 60 # percent of original size
     width = int(img.shape[1] * scale_percent / 100)
@@ -44,7 +47,11 @@ def sudokucap(img):
     dim = (width, height)
     img =cv2.resize(img,dim)
     imgthre=preprocess(img)
-    sudokucoor=getcontour(imgthre)
-    sudokufinal=getWrap(img,sudokucoor,dim)
-    sudokufinal=cv2.resize(sudokufinal,(600,600))
-    return sudokufinal
+    success,sudokucoor=getcontour(imgthre)
+    if success==True:
+        sudokufinal=getWrap(img,sudokucoor,dim)
+        sudokufinal=cv2.resize(sudokufinal,(600,600))
+        return success,sudokufinal
+    else:
+        sudokufinal=cv2.resize(img,(600,600))
+        return success,sudokufinal
