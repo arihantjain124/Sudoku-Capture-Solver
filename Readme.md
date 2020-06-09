@@ -6,7 +6,7 @@ The Program uses Opencv to find sudoku puzzle in an image which is then resized 
 
 Code in Action on a mobile captured image.
 
-![](http://g.recordit.co/roGLJ1MQa1.gif)
+![workinggif](http://g.recordit.co/roGLJ1MQa1.gif)
 
 ## what's ahead
 
