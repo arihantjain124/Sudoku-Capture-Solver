@@ -131,13 +131,13 @@ class sudoku():
             temp = self.coor[:]
             self.coor, self.Flag = self.cells[self.coor[0]
                                               ][self.coor[1]].solvecell()
-            time.sleep(0.0005)
+            time.sleep(0.00000001)
             if self.Flag == 2:
                 cv2.rectangle(drawimg, start, end, (0, 255, 0), 2)
                 self.solvedcell.append(temp)
             elif self.Flag == 0:
                 self.coor = self.solvedcell.pop()
-            time.sleep(0.0005)
+            time.sleep(0.00000001)
             for i in self.solvedcell:
                 num = puzzle[i[0]][i[1]]
                 org = self.pointfortext(i[0] + 1, i[1])
@@ -159,9 +159,10 @@ def sudokusolve(puzzle):
 
 pathimg = sys.argv[1]
 img = cv2.imread(pathimg)
-og = cv2.resize(img, (600, 600))
+og = cv2.resize(img, (426, 566))
 cv2.imshow("original", og)
+cv2.waitKey(1)
 puzzle = puzzlereader(img)
 flag, sudokuimg = sudokucap(img)
 sudokusolve(puzzle)
-time.sleep(10)
+time.sleep(60)
