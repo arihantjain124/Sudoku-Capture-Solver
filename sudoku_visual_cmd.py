@@ -159,10 +159,10 @@ def sudokusolve(puzzle):
 
 pathimg = sys.argv[1]
 img = cv2.imread(pathimg)
-og = cv2.resize(img, (426, 566))
+og = cv2.resize(img, (600, 600))
 cv2.imshow("original", og)
 cv2.waitKey(1)
 puzzle = puzzlereader(img)
 flag, sudokuimg = sudokucap(img)
 sudokusolve(puzzle)
-time.sleep(60)
+time.sleep(10)
