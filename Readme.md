@@ -1,15 +1,37 @@
-# Sudoku Capture Solver
+# Sudoku Capture Solver 🔢
 
-> Sudoku Capturing and then Solving it from an Image
+Point a camera at a printed Sudoku puzzle and get it solved on screen — a computer-vision pipeline that finds, reads, and solves a Sudoku grid from a live/photographed image.
 
-The Program uses Opencv to find sudoku puzzle in an image which is then resized and sent to divide among individual cells and passed through a Neural Network for digit recognizing and blank cells are read as "0". The output is passed to sudoku .py which solves sudoku using backtracking its basically an optimized brute-force approach.
+![Code in action on a mobile-captured image](workingexample.gif)
 
-Code in Action on a mobile captured image.
+## How it works
 
-![](workingexample.gif)
+1. **Capture & locate** ([`sudokucapture.py`](sudokucapture.py)) — OpenCV contour detection finds the largest quadrilateral in the frame (the puzzle border) and applies a perspective warp to get a top-down, uniformly-sized view of the grid.
+2. **Read digits** ([`sudokuread.py`](sudokuread.py)) — the warped grid is sliced into its 81 cells; each cell is preprocessed (grayscale, histogram-equalised, normalised) and passed through a small CNN (`model.p`, a pickled Keras/TensorFlow model) to classify the digit, with empty cells read as `0`.
+3. **Solve** ([`sudoku.py`](sudoku.py)) — the recognized 9×9 grid is solved with a backtracking search (an optimised brute-force constraint solver over each cell's possible values).
+4. **Display** ([`sudoku_visual.py`](sudoku_visual.py) / `sudoku_visual_cmd.py`) — the solution is overlaid back onto the original image / printed to the terminal.
 
-## what's ahead
+## Requirements
 
-> Contours are used here to find the sudoku puzzle this leads to some cases in which the puzzle is not recognized and this can be improved upon.
+- Python 3
+- OpenCV (`opencv-python`)
+- TensorFlow / Keras
+- NumPy
 
-> The sudoku solving algorithm is a brute-force approach this can be improved upon by using a more efficient solution
+```bash
+pip install -r requirements.txt
+
+# Solve from a webcam feed
+python sudokucapture.py
+
+# Or solve from one of the sample test images
+python sudokuread.py --image Test_Images/1.png
+```
+
+> Test images for a quick try are included in [`Test_Images/`](Test_Images).
+
+## What's ahead
+
+> Contours are used to find the sudoku puzzle in the frame — this leads to occasional misses when the puzzle isn't cleanly detected, which could be improved with more robust corner detection.
+
+> The solving algorithm is a brute-force backtracking approach; this could be improved with a more efficient constraint-propagation solver (e.g. dancing links / exact cover).
